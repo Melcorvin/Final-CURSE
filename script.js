@@ -128,7 +128,7 @@ function updateSummary() {
   const summaryList = document.getElementById("order-summary");
   summaryList.innerHTML = "";
   let total = 0;
-  let discountMessage = ""; // To hold the discount message
+  let discountMessage = "<strong>Happy Hour: 10% Discount Applied!</strong>"; // To hold the discount message
 
   order.forEach((item, index) => {
     const li = document.createElement("li");
@@ -145,7 +145,6 @@ function updateSummary() {
   let discount = 0;
   if (currentHour >= 14 && currentHour <= 16) {
     discount = 0.1;
-    discountMessage = "<strong>Happy Hour: 10% Discount Applied!</strong>"; // Show discount message
   }
   total -= total * discount;
 
