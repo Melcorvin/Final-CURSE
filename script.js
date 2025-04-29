@@ -129,7 +129,11 @@ addBtn.style.alignItems = "center";
 addBtn.style.marginLeft = "auto";  // Align to the center
 addBtn.style.marginRight = "auto";  // Align to the center
 addBtn.style.color = "#fff";
-addBtn.style.backgroundColor = "#4b0000";
+addBtn.style.backgroundColor = "#000000";
+addBtn.style.padding = "12px 24px"; // <-- Added padding (top-bottom: 12px, left-right: 24px)
+addBtn.style.border = "none";
+addBtn.style.borderRadius = "8px";
+addBtn.style.cursor = "pointer";
 
 addBtn.onclick = () => addToOrder(item, quantityInput.value);
 
@@ -231,31 +235,60 @@ function pay(method) {
     const currentHour = now.getHours();
 
     let total = 0;
-    let receiptHTML = `
-      <div class="receipt-container">
+let receiptHTML = `
+  <div class="receipt-container">
     <img src="https://scontent.fcgy1-3.fna.fbcdn.net/v/t1.15752-9/494355553_573402891885832_4447870711429825730_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEPXVfd_8An1idg41rA-Z6buqjoFFRmdm66qOgUVGZ2bu3rOIx4ukbeomumXENci9aGudADQpIb2t1Njo65pNPO&_nc_ohc=vcaNeyh3qwwQ7kNvwH_3M4q&_nc_oc=Adnt5J3YDOhOUizXf-ztfH5KCIbP06oVZ3pBD84vLM2bP2Bl2QOLaNWA0dG5Z66A0cc&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&oh=03_Q7cD2AH-MJvSsFgfgyP9UvA3gcu6woCwaNsnwknGAWYH3DciJA&oe=6835427E" alt="Logo" style="width: 60px; height: 60px; border-radius: 40px 100px / 100px; object-fit: cover; border: 5px solid #ffffff; box-shadow: 0 0 35px rgb(241, 15, 15); display: block; margin: 0 auto 20px auto; animation: floatParticles 6s infinite ease-in-out;" />
     <h2>🔥CURSE🔥</h2>
     <h3>🧾 Receipt</h3>
-    <h4>Payment Method: <strong>${method}</strong></h4>
-        <ul>`;
-    order.forEach(item => {
-      total += item.price * item.quantity;
-      receiptHTML += `
-        <li>${item.quantity}x ${item.name} - ₱${(item.price * item.quantity).toFixed(2)}</li>`;
-    });
+    <p><strong>Time:</strong> ${timestamp}</p>
+    <ul class="receipt-items">
+`;
 
-    let discount = (currentHour >= 14 && currentHour <= 16) ? 0.10 : 0.10;
-    let finalTotal = total - (total * discount);
+order.forEach(item => {
+  const itemTotal = item.price * item.quantity;
+  receiptHTML += `
+    <li>
+      ${item.quantity}x ${item.name} 
+      <span style="float: right;">₱${itemTotal.toFixed(2)}</span>
+    </li>`;
+  total += itemTotal;
+});
 
-    receiptHTML += `
-        </ul>
-        ${discount > 0 ? `<p style="color: #ffcc00; font-weight: bold; margin-top: 5px;">
-         🔥CURSE🔥 Fiery Inferno: 10% OFF! The heat is on, and so are the savings!
-      </p>` : ""}
-        <h4><strong>Total Paid:</strong> ₱${finalTotal.toFixed(2)}</h4>
-        <h4>🔥 Thank you for your order!</h4>`;
+const discount = (currentHour >= 14 && currentHour <= 16) ? 0.10 : 0;
+const discountAmount = total * discount;
+const finalTotal = total - discountAmount;
 
-    receiptDiv.innerHTML = receiptHTML;
+if (discount > 0) {
+  receiptHTML += `<li style="color: #0f0;">Happy Hour Discount (10%): <span style="float:right;">−₱${discountAmount.toFixed(2)}</span></li>`;
+}
+
+receiptHTML += `
+  <li style="font-weight: bold; border-top: 1px solid #999; padding-top: 5px;">
+    Total: <span style="float:right;">₱${finalTotal.toFixed(2)}</span>
+  </li>
+</ul>
+<p style="color: #ffcc00; font-weight: bold; margin-top: 5px;">
+  🔥CURSE🔥 Fiery Inferno: 10% OFF! The heat is on, and so are the savings!
+</p>
+<p><strong>Payment Method:</strong> ${method}</p>
+<p> Thank you for ordering at 🔥CURSE🔥! </p>
+<button onclick="resetOrder()" style="
+  margin-top: 20px;
+  padding: 5px 10px;
+  font-size: 1rem;
+  color: #000000;
+  background: #fff;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+">
+  Start New Order
+</button>
+</div>
+`;
+
+receiptDiv.innerHTML = receiptHTML;
 
     // Optionally clear localStorage if you want
     localStorage.removeItem("curseOrder");
@@ -263,6 +296,14 @@ function pay(method) {
     updateSummary();
   }, 2000);
 }
+
+function resetOrder() {
+  order = [];
+  updateSummary();
+  document.getElementById("receipt").style.display = "none";
+  document.getElementById("menu").style.display = "block";
+}
+
 
 function resetOrder() {
   order = [];
