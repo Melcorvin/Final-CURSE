@@ -1,15 +1,3 @@
-function initializeApp() {
-  setTimeout(() => {
-    const loadingScreen = document.getElementById("loading-screen");
-    loadingScreen.style.opacity = "0";
-    setTimeout(() => {
-      loadingScreen.style.display = "none";
-      document.getElementById("app-content").style.display = "block";
-      showHomePage(); // Default to Home Page
-    }, 500); // Wait for fadeout
-  }, 2000);
-}
-
 
 const menuItems = {
   meals: [
@@ -30,7 +18,6 @@ const menuItems = {
 
   drinks: [
     { name: "Coca-Cola®", price: 85.00, img: "https://imagedelivery.net/cyuZzWywsYlsu7DPQZIgOg/8512e529-2d14-42a9-0dfc-8f7399139400/f=avif,w=960,q=80" },
-    { name: "Diet Dr Pepper®", price: 88.00, img: "https://imagedelivery.net/cyuZzWywsYlsu7DPQZIgOg/16e83fd2-c4b9-4332-f77e-c3be98289e00/f=avif,w=960,q=80" },
     { name: "Sprite®", price: 85.00, img: "https://imagedelivery.net/cyuZzWywsYlsu7DPQZIgOg/b9aceef5-2f42-4253-d359-8435b30e6600/f=avif,w=960,q=80" },
     { name: "Hi-C Flashin' Fruit Punch®", price: 90.00, img: "https://imagedelivery.net/cyuZzWywsYlsu7DPQZIgOg/47d2d95a-83df-4c8c-0365-f3bf9c0d4200/f=avif,w=960,q=80" },
     { name: "Powerade®", price: 90.00, img: "https://imagedelivery.net/cyuZzWywsYlsu7DPQZIgOg/883c1f1b-3e59-4879-8e0b-7cba6cbcbb00/f=avif,w=960,q=80" },
@@ -51,6 +38,7 @@ const menuItems = {
       { name: "Salted Caramel & Chocolate Cookie", price: 150.00, img: "https://imagedelivery.net/cyuZzWywsYlsu7DPQZIgOg/999bce34-56c8-4b5a-3b5c-45e4e3b32900/f=avif,w=960,q=80" },
     ],
 };
+    
 
 let order = [];
 
@@ -64,9 +52,9 @@ function initializeApp() {
 function renderMenu(category = "home") {
   const menuContainer = document.getElementById("menu");
   menuContainer.innerHTML = `
-    <div style="text-align: center; margin: 80px;">
+    <div style="text-align: center; margin: 40px;">
       <h1>Welcome to 🔥CURSE🔥!</h1>
-      <p style="font-size: 18px; max-width: 600px; margin: 20px auto;">
+      <p style="font-size: 18px; max-width: 600px; margin: 15px auto;">
         Order your favorite Meals, Drinks, and Desserts in just a few taps. 
         Fast, easy, and delicious, always at 🔥CURSE🔥!
       </p>
@@ -89,9 +77,8 @@ function renderMenu(category = "home") {
     itemsDiv.classList.add("items");
 
     menuItems[cat].forEach((item) => {
-      const btn = document.createElement("button");
+      const btn = document.createElement("div");
       btn.classList.add("item-btn");
-      btn.onclick = () => addToOrder(item);
 
       const img = document.createElement("img");
       img.src = item.img;
@@ -100,8 +87,58 @@ function renderMenu(category = "home") {
       const name = document.createElement("div");
       name.textContent = `${item.name} - ₱${item.price.toFixed(2)}`;
 
+      const qtyWrapper = document.createElement("div");
+      qtyWrapper.style.marginTop = "10px";
+      qtyWrapper.style.display = "flex";
+      qtyWrapper.style.justifyContent = "center";
+      qtyWrapper.style.alignItems = "center";
+      qtyWrapper.style.gap = "8px";
+
+      const minusBtn = document.createElement("button");
+      minusBtn.textContent = "−";
+      minusBtn.style.width = "30px";
+      minusBtn.onclick = () => {
+        quantityInput.value = Math.max(1, parseInt(quantityInput.value) - 1);
+      };
+
+      const quantityInput = document.createElement("input");
+      quantityInput.min = 1;
+      quantityInput.value = 1;
+      quantityInput.style.width = "50px";
+      quantityInput.style.textAlign = "center";
+
+      const plusBtn = document.createElement("button");
+      plusBtn.textContent = "+";
+      plusBtn.style.width = "30px";
+      plusBtn.onclick = () => {
+        quantityInput.value = parseInt(quantityInput.value) + 1;
+      };
+
+      qtyWrapper.appendChild(minusBtn);
+      qtyWrapper.appendChild(quantityInput);
+      qtyWrapper.appendChild(plusBtn);      
+
+      const addBtn = document.createElement("button");
+addBtn.textContent = "Add to Order";
+addBtn.style.marginTop = "10px";
+
+// Center the button using flexbox
+addBtn.style.display = "flex";
+addBtn.style.justifyContent = "center";
+addBtn.style.alignItems = "center";
+addBtn.style.marginLeft = "auto";  // Align to the center
+addBtn.style.marginRight = "auto";  // Align to the center
+addBtn.style.color = "#fff";
+addBtn.style.backgroundColor = "#4b0000";
+
+addBtn.onclick = () => addToOrder(item, quantityInput.value);
+
+
       btn.appendChild(img);
       btn.appendChild(name);
+      btn.appendChild(qtyWrapper);
+      btn.appendChild(addBtn);
+
       itemsDiv.appendChild(btn);
     });
 
@@ -110,14 +147,22 @@ function renderMenu(category = "home") {
   }
 }
 
+
 function filterMenu(category) {
   renderMenu(category);
 }
 
-function addToOrder(item) {
-  order.push(item);
+function addToOrder(item, quantity) {
+  quantity = parseInt(quantity, 10); // Ensure quantity is a number
+  const existing = order.find(o => o.name === item.name);
+  if (existing) {
+    existing.quantity += quantity;
+  } else {
+    order.push({ ...item, quantity });
+  }
   updateSummary();
 }
+
 
 function removeFromOrder(index) {
   order.splice(index, 1);
@@ -126,40 +171,45 @@ function removeFromOrder(index) {
 
 function updateSummary() {
   const summaryList = document.getElementById("order-summary");
+  const discountDiv = document.getElementById("discount-message");
   summaryList.innerHTML = "";
+  discountDiv.innerHTML = "";
+
   let total = 0;
-  let discountMessage = "<strong>Happy Hour: 10% Discount Applied!</strong>"; // To hold the discount message
+  const currentHour = new Date().getHours();
+  let discount = 0.10;
 
   order.forEach((item, index) => {
+    const itemTotal = item.price * item.quantity;
     const li = document.createElement("li");
     li.innerHTML = `
-      ${item.name} - ₱${item.price.toFixed(2)}
+      <span class="badge">${item.quantity}x</span> 
+      ${item.name}
+      <span class="item-total">₱${itemTotal.toFixed(2)}</span>
       <button onclick="removeFromOrder(${index})" style="margin-left: 10px; color: red; border: none; background: transparent; cursor: pointer;">❌</button>
     `;
     summaryList.appendChild(li);
-    total += item.price;
+    total += itemTotal;
   });
 
-  // Happy hour discount (2PM - 4PM)
-  const currentHour = new Date().getHours();
-  let discount = 0;
   if (currentHour >= 14 && currentHour <= 16) {
-    discount = 0.1;
-  }
-  total -= total * discount;
-
-  // Display the discount message if it's happy hour
-  if (discountMessage) {
-    const discountDiv = document.createElement("div");
-    discountDiv.innerHTML = discountMessage;
-    document.getElementById("discount-message").appendChild(discountDiv);
-  } else {
-    // Clear the discount message if not during happy hour
-    document.getElementById("discount-message").innerHTML = "";
+    discount = 0.10;
+    discountDiv.innerHTML = "";
   }
 
-  document.getElementById("total").textContent = total.toFixed(2);
+  const finalTotal = total - (total * discount);
+  document.getElementById("total").textContent = finalTotal.toFixed(2);
+  localStorage.setItem("curseOrder", JSON.stringify(order));
 }
+
+function updateQuantity(index, newQuantity) {
+  if (newQuantity < 1) return; // Prevent quantities from going below 1
+  order[index].quantity = newQuantity;
+  document.getElementById(`quantity-${index}`).textContent = newQuantity;
+  updateSummary();
+}
+
+
 
 function pay(method) {
   if (order.length === 0) {
@@ -176,28 +226,51 @@ function pay(method) {
     const receiptDiv = document.getElementById("receipt");
     receiptDiv.style.display = "block";
 
-    let total = order.reduce((t, item) => t + item.price, 0);
-    const currentHour = new Date().getHours();
-    let discountMessage = "";
-    if (currentHour >= 14 && currentHour <= 16) {
-      total -= total * 0.1;
-      discountMessage = "<strong>Happy Hour: 10% Discount Applied!</strong>"; // Show discount message in receipt
-    }
+    const now = new Date();
+    const timestamp = now.toLocaleString();
+    const currentHour = now.getHours();
 
-    receiptDiv.innerHTML = `
-  <div class="receipt-container">
+    let total = 0;
+    let receiptHTML = `
+      <div class="receipt-container">
     <img src="https://scontent.fcgy1-3.fna.fbcdn.net/v/t1.15752-9/494355553_573402891885832_4447870711429825730_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEPXVfd_8An1idg41rA-Z6buqjoFFRmdm66qOgUVGZ2bu3rOIx4ukbeomumXENci9aGudADQpIb2t1Njo65pNPO&_nc_ohc=vcaNeyh3qwwQ7kNvwH_3M4q&_nc_oc=Adnt5J3YDOhOUizXf-ztfH5KCIbP06oVZ3pBD84vLM2bP2Bl2QOLaNWA0dG5Z66A0cc&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&oh=03_Q7cD2AH-MJvSsFgfgyP9UvA3gcu6woCwaNsnwknGAWYH3DciJA&oe=6835427E" alt="Logo" style="width: 60px; height: 60px; border-radius: 40px 100px / 100px; object-fit: cover; border: 5px solid #ffffff; box-shadow: 0 0 35px rgb(241, 15, 15); display: block; margin: 0 auto 20px auto; animation: floatParticles 6s infinite ease-in-out;" />
     <h2>🔥CURSE🔥</h2>
     <h3>🧾 Receipt</h3>
     <h4>Payment Method: <strong>${method}</strong></h4>
-    <ul>${order.map(item => `<li>${item.name} - ₱${item.price.toFixed(2)}</li>`).join("")}</ul>
-    <h4><strong>Total Paid:</strong> ₱${total.toFixed(2)}</h4>
-    <h4>🔥 Thank you for your order!</h4>
-  </div>
-`;
-    
-  }, 3000);
+        <ul>`;
+    order.forEach(item => {
+      total += item.price * item.quantity;
+      receiptHTML += `
+        <li>${item.quantity}x ${item.name} - ₱${(item.price * item.quantity).toFixed(2)}</li>`;
+    });
+
+    let discount = (currentHour >= 14 && currentHour <= 16) ? 0.10 : 0.10;
+    let finalTotal = total - (total * discount);
+
+    receiptHTML += `
+        </ul>
+        ${discount > 0 ? `<p style="color: #ffcc00; font-weight: bold; margin-top: 5px;">
+         🔥CURSE🔥 Fiery Inferno: 10% OFF! The heat is on, and so are the savings!
+      </p>` : ""}
+        <h4><strong>Total Paid:</strong> ₱${finalTotal.toFixed(2)}</h4>
+        <h4>🔥 Thank you for your order!</h4>`;
+
+    receiptDiv.innerHTML = receiptHTML;
+
+    // Optionally clear localStorage if you want
+    localStorage.removeItem("curseOrder");
+    order = []; // reset order array
+    updateSummary();
+  }, 2000);
 }
+
+function resetOrder() {
+  order = [];
+  updateSummary();
+  document.getElementById("receipt").style.display = "none";
+  renderMenu(); // Optionally return to the main menu screen
+}
+
 
 function startNewOrder() {
   order = [];
