@@ -158,9 +158,9 @@ function filterMenu(category) {
 
 function addToOrder(item, quantity) {
   quantity = parseInt(quantity, 10); // Ensure quantity is a number
-  const orderItem = { ...item, qty };
+  const orderItem = { ...item, quantity };
   order.push(orderItem);
-  alert(`${item.name} x${qty} added to your order!`);
+  alert(`${item.name} x${quantity} added to your order!`);
   updateSummary();
 }
 
