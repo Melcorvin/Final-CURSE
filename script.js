@@ -158,12 +158,9 @@ function filterMenu(category) {
 
 function addToOrder(item, quantity) {
   quantity = parseInt(quantity, 10); // Ensure quantity is a number
-  const existing = order.find(o => o.name === item.name);
-  if (existing) {
-    existing.quantity += quantity;
-  } else {
-    order.push({ ...item, quantity });
-  }
+  const orderItem = { ...item, qty };
+  order.push(orderItem);
+  alert(`${item.name} x${qty} added to your order!`);
   updateSummary();
 }
 
