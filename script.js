@@ -261,7 +261,7 @@ receiptHTML += `
   </li>
 </ul>
 <p><strong>Payment Method:</strong> ${method}</p>
-<p> Thank you for ordering at <span style="color: #ffcc00;">🔥 C U R S E 🔥!</span> </p>
+<p> Thank you for ordering at <span style="color: #ffcc00;">🔥 C U R S E 🔥</span>!</p>
 <button onclick="resetOrder()" style="
   margin-top: 20px;
   padding: 5px 10px;
