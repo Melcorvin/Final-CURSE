@@ -246,13 +246,13 @@ order.forEach(item => {
   total += itemTotal;
 });
 
-const discount = (currentHour >= 14 && currentHour <= 16) ? 0.10 : 0;
+const discount = (currentHour >= 1 && currentHour <= 24) ? 0.10 : 0;
 const discountAmount = total * discount;
 const finalTotal = total - discountAmount;
 
 if (discount > 0) {
   receiptHTML += `<li style="color: #0f0; font-weight: bold; margin-top: 5px;">
-  <span style="color: #ffcc00;">🔥 C U R S E 🔥</span> Fiery Inferno Happy Hour: Feel the heat every day from 2PM to 4PM! <span style="float:right;">−₱${discountAmount.toFixed(2)}</span></li>`;
+  <span style="color: #ffcc00;">🔥 C U R S E 🔥</span> Fiery Inferno Happy Hour 10% Discount: Feel the heat every day ! <span style="float:right;">−₱${discountAmount.toFixed(2)}</span></li>`;
 }
 
 receiptHTML += `
