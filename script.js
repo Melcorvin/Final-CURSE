@@ -53,7 +53,7 @@ function renderMenu(category = "home") {
   const menuContainer = document.getElementById("menu");
   menuContainer.innerHTML = `
     <div style="text-align: center; margin: 40px;">
-      <h1>Welcome to <span style="color: #ffcc00;">🔥 C U R S E 🔥</span></h1>
+      <h2>Welcome to <span style="color: #ffcc00;">🔥 C U R S E 🔥</span></h2>
       <p style="font-size: 18px; max-width: 600px; margin: 15px auto;">
         Order your favorite Meals, Drinks, and Desserts in just a few taps. 
         Fast, easy, and delicious, always at <span style="color: #ffcc00;">🔥 C U R S E 🔥</span>!
@@ -67,7 +67,7 @@ function renderMenu(category = "home") {
     const categoryDiv = document.createElement("div");
     categoryDiv.classList.add("category");
 
-    const title = document.createElement("h2");
+    const title = document.createElement("h5");
     title.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
     title.style.textAlign = "center";
     title.style.marginBottom = "20px";
