@@ -46,7 +46,7 @@ function initializeApp() {
   setTimeout(() => {
     document.getElementById("loading-screen").style.display = "none";
     renderMenu();
-  }, 3500);
+  }, 4000);
 }
 
 function renderMenu(category = "home") {
