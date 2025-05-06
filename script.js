@@ -252,7 +252,7 @@ const finalTotal = total - discountAmount;
 
 if (discount > 0) {
   receiptHTML += `<li style="color: #0f0; font-weight: bold; margin-top: 5px;">
-  <span style="color: #ffcc00;">🔥 C U R S E 🔥</span> Fiery Inferno Happy Hour 10% Discount: Feel the heat every day from 2PM to 4PM! <span style="float:right;">−₱${discountAmount.toFixed(2)}</span></li>`;
+  <span style="color: #ffcc00;">🔥 C U R S E 🔥</span> Fiery Inferno Happy Hour: Feel the heat every day from 2PM to 4PM! <span style="float:right;">−₱${discountAmount.toFixed(2)}</span></li>`;
 }
 
 receiptHTML += `
@@ -261,7 +261,7 @@ receiptHTML += `
   </li>
 </ul>
 <p><strong>Payment Method:</strong> ${method}</p>
-<p> Thank you for ordering at <span style="color: #ffcc00;">🔥 C U R S E 🔥</span>!</p>
+<p> Thank you for ordering at <span style="color: #ffcc00;">🔥 C U R S E 🔥!</span> </p>
 <button onclick="resetOrder()" style="
   margin-top: 20px;
   padding: 5px 10px;
