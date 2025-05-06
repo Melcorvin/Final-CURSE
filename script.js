@@ -46,17 +46,17 @@ function initializeApp() {
   setTimeout(() => {
     document.getElementById("loading-screen").style.display = "none";
     renderMenu();
-  }, 2000);
+  }, 3500);
 }
 
 function renderMenu(category = "home") {
   const menuContainer = document.getElementById("menu");
   menuContainer.innerHTML = `
     <div style="text-align: center; margin: 40px;">
-      <h1>Welcome to 🔥CURSE🔥!</h1>
+      <h1>Welcome to <span style="color: #ffcc00;">🔥CURSE🔥!</span></h1>
       <p style="font-size: 18px; max-width: 600px; margin: 15px auto;">
         Order your favorite Meals, Drinks, and Desserts in just a few taps. 
-        Fast, easy, and delicious, always at 🔥CURSE🔥!
+        Fast, easy, and delicious, always at <span style="color: #ffcc00;">🔥CURSE🔥</span>!
       </p>
     </div>
   `;
@@ -178,7 +178,7 @@ function updateSummary() {
 
   let total = 0;
   const currentHour = new Date().getHours();
-  let discount = 0.10;
+  let discount = 0;
 
   order.forEach((item, index) => {
     const itemTotal = item.price * item.quantity;
@@ -192,11 +192,6 @@ function updateSummary() {
     summaryList.appendChild(li);
     total += itemTotal;
   });
-
-  if (currentHour >= 14 && currentHour <= 16) {
-    discount = 0.10;
-    discountDiv.innerHTML = "";
-  }
 
   const finalTotal = total - (total * discount);
   document.getElementById("total").textContent = finalTotal.toFixed(2);
@@ -235,7 +230,7 @@ function pay(method) {
 let receiptHTML = `
   <div class="receipt-container">
     <img src="https://scontent.fcgy1-3.fna.fbcdn.net/v/t1.15752-9/494355553_573402891885832_4447870711429825730_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEPXVfd_8An1idg41rA-Z6buqjoFFRmdm66qOgUVGZ2bu3rOIx4ukbeomumXENci9aGudADQpIb2t1Njo65pNPO&_nc_ohc=vcaNeyh3qwwQ7kNvwH_3M4q&_nc_oc=Adnt5J3YDOhOUizXf-ztfH5KCIbP06oVZ3pBD84vLM2bP2Bl2QOLaNWA0dG5Z66A0cc&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&oh=03_Q7cD2AH-MJvSsFgfgyP9UvA3gcu6woCwaNsnwknGAWYH3DciJA&oe=6835427E" alt="Logo" style="width: 60px; height: 60px; border-radius: 40px 100px / 100px; object-fit: cover; border: 5px solid #ffffff; box-shadow: 0 0 35px rgb(241, 15, 15); display: block; margin: 0 auto 20px auto; animation: floatParticles 6s infinite ease-in-out;" />
-    <h2>🔥CURSE🔥</h2>
+    <h2><span style="color: #ffcc00;">🔥CURSE🔥</span></h2>
     <h3>🧾 Receipt</h3>
     <p><strong>Time:</strong> ${timestamp}</p>
     <ul class="receipt-items">
@@ -256,7 +251,8 @@ const discountAmount = total * discount;
 const finalTotal = total - discountAmount;
 
 if (discount > 0) {
-  receiptHTML += `<li style="color: #0f0;">Happy Hour Discount (10%): <span style="float:right;">−₱${discountAmount.toFixed(2)}</span></li>`;
+  receiptHTML += `<li style="color: #0f0; font-weight: bold; margin-top: 5px;">
+  <span style="color: #ffcc00;">🔥CURSE🔥</span> Fiery Inferno Happy Hour: Feel the heat every day from 2PM to 4PM! <span style="float:right;">−₱${discountAmount.toFixed(2)}</span></li>`;
 }
 
 receiptHTML += `
@@ -264,11 +260,8 @@ receiptHTML += `
     Total: <span style="float:right;">₱${finalTotal.toFixed(2)}</span>
   </li>
 </ul>
-<p style="color: #ffcc00; font-weight: bold; margin-top: 5px;">
-  🔥CURSE🔥 Fiery Inferno: 10% OFF! The heat is on, and so are the savings!
-</p>
 <p><strong>Payment Method:</strong> ${method}</p>
-<p> Thank you for ordering at 🔥CURSE🔥! </p>
+<p> Thank you for ordering at <span style="color: #ffcc00;">🔥CURSE🔥!</span> </p>
 <button onclick="resetOrder()" style="
   margin-top: 20px;
   padding: 5px 10px;
@@ -299,14 +292,6 @@ function resetOrder() {
   updateSummary();
   document.getElementById("receipt").style.display = "none";
   document.getElementById("menu").style.display = "block";
-}
-
-
-function resetOrder() {
-  order = [];
-  updateSummary();
-  document.getElementById("receipt").style.display = "none";
-  renderMenu(); // Optionally return to the main menu screen
 }
 
 
